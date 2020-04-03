@@ -8,6 +8,7 @@ import org.minima.miniscript.Contract;
 import org.minima.objects.Address;
 import org.minima.objects.base.MiniData;
 import org.minima.objects.base.MiniString;
+import org.minima.utils.Crypto;
 import org.minima.utils.json.JSONObject;
 
 public class ScriptProof extends Proof {
@@ -30,20 +31,20 @@ public class ScriptProof extends Proof {
 	public ScriptProof(String zScript, String zChainSHAProof) throws Exception {
 		mScript = new MiniString(Contract.cleanScript(zScript));
 		
-		//Create an address
-		Address addr = new Address(mScript.toString());
+		//Get the string data
+		byte[] sdata = mScript.getData();
 		
 		if(zChainSHAProof.startsWith("0x0200")) {
 			setHashBitLength(512);
-			setData(addr.getAddressData());	
+			setData(new MiniData(Crypto.getInstance().hashData(sdata,512)));	
 				
 		}else if(zChainSHAProof.startsWith("0x0100")) {
 			setHashBitLength(256);
-			setData(addr.getMediumAddressData());	
+			setData(new MiniData(Crypto.getInstance().hashData(sdata,256)));	
 			
 		}else if(zChainSHAProof.startsWith("0x00A0")) {
 			setHashBitLength(160);
-			setData(addr.getShortAddressData());	
+			setData(new MiniData(Crypto.getInstance().hashData(sdata,160)));	
 			
 		}else {
 			//ERROR
