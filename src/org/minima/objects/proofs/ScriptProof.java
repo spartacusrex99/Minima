@@ -19,15 +19,6 @@ public class ScriptProof extends Proof {
 		super();
 	}
 	
-	/**
-	 * Create a simple one hash Proof for a script
-	 * @param zScript
-	 * @throws Exception 
-	 */
-	public ScriptProof(String zScript) throws Exception {
-		this(zScript,"0x0200");
-	}
-	
 	public ScriptProof(String zScript, String zChainSHAProof) throws Exception {
 		mScript = new MiniString(Contract.cleanScript(zScript));
 		

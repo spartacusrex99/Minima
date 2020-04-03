@@ -125,8 +125,16 @@ public class Witness implements Streamable {
 		return false;
 	}
 	
-	public boolean addScript(String zScript) throws Exception {
-		return addScript(new ScriptProof(zScript));
+	public boolean addScript(String zScript, int zBits) throws Exception {
+		if(zBits == 512) {
+			return addScript(new ScriptProof(zScript,"0x0200"));	
+		}else if(zBits == 256) {
+			return addScript(new ScriptProof(zScript,"0x0100"));	
+		}else if(zBits == 160) {
+			return addScript(new ScriptProof(zScript,"0x00A0"));	
+		}
+		
+		return false;
 	}
 	
 	public ScriptProof getScript(MiniData zAddress) {
