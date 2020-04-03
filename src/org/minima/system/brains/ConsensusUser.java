@@ -132,15 +132,7 @@ public class ConsensusUser {
 					mmrnode.put("data",leaf.toString());
 				}else{
 					//First hash with 512 as normal..
-					byte[] hash = Crypto.getInstance().hashData(leaf.getData());
-					
-					//Then Hash that with the smaller if needed
-					if(bitlength != 512) {
-						hash = Crypto.getInstance().hashData(hash, bitlength);
-					}
-					
-//					byte[] hash = Crypto.getInstance().hashData(leaf.getData(), bitlength);
-					
+					byte[] hash = Crypto.getInstance().hashData(leaf.getData(),bitlength);
 					finalhash = new MiniData(hash);
 					mmrnode.put("data","[ "+leaf.toString()+" ]");
 				}

@@ -142,19 +142,19 @@ public class Witness implements Streamable {
 				return proof;
 			}
 			
-			//It's the smaller version
-			if(len != 64) {
-				//Try the hash..
-				int bitlength = len * 8;
-				
-				//Hash it..
-				MiniData hash = new MiniData(Crypto.getInstance().hashData(fulladdr.getData(), bitlength));
-				
-				//Check it..
-				if(hash.isEqual(zAddress)) {
-					return proof;
-				}
-			}
+//			//It's the smaller version
+//			if(len != 64) {
+//				//Try the hash..
+//				int bitlength = len * 8;
+//				
+//				//Hash it..
+//				MiniData hash = new MiniData(Crypto.getInstance().hashData(fulladdr.getData(), bitlength));
+//				
+//				//Check it..
+//				if(hash.isEqual(zAddress)) {
+//					return proof;
+//				}
+//			}
 		}
 		
 		return null;
