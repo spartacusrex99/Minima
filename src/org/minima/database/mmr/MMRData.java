@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import org.minima.objects.Coin;
 import org.minima.objects.StateVariable;
+import org.minima.objects.base.MMRSumNumber;
 import org.minima.objects.base.MiniByte;
 import org.minima.objects.base.MiniData;
 import org.minima.objects.base.MiniNumber;
@@ -46,7 +47,7 @@ public class MMRData implements Streamable{
 	/**
 	 * The Amount of this Output - used for the Sum Tree
 	 */
-	MiniNumber mValueSum;
+	MMRSumNumber mValueSum;
 	
 	/**
 	 * Is this a HASH only affair
@@ -63,7 +64,7 @@ public class MMRData implements Streamable{
 	 * 
 	 * @param zData
 	 */
-	public MMRData(MiniData zData, MiniNumber zValueSum) {
+	public MMRData(MiniData zData, MMRSumNumber zValueSum) {
 		//Only the final hash
 		mFinalHash = zData;
 		
@@ -93,9 +94,9 @@ public class MMRData implements Streamable{
 		
 		//The Sum Value
 		if(zSpent.isTrue()) {
-			mValueSum = MiniNumber.ZERO;	
+			mValueSum = new MMRSumNumber();	
 		}else {
-			mValueSum = zCoin.getAmount();	
+			mValueSum = new MMRSumNumber(zCoin.getAmount());	
 		}
 		
 		//Calculate the hash
@@ -130,7 +131,7 @@ public class MMRData implements Streamable{
 		return mFinalHash;
 	}
 	
-	public MiniNumber getValueSum() {
+	public MMRSumNumber getValueSum() {
 		return mValueSum;
 	}
 	
@@ -223,7 +224,7 @@ public class MMRData implements Streamable{
 		
 		if(mHashOnly) {
 			mFinalHash 	 = MiniData.ReadFromStream(zIn);
-			mValueSum    = MiniNumber.ReadFromStream(zIn);
+			mValueSum    = MMRSumNumber.ReadFromStream(zIn);
 			
 		}else {
 			mSpent   	 = MiniByte.ReadFromStream(zIn);
@@ -243,9 +244,9 @@ public class MMRData implements Streamable{
 			
 			//The Sum Value
 			if(mSpent.isTrue()) {
-				mValueSum = MiniNumber.ZERO;	
+				mValueSum = new MMRSumNumber();	
 			}else {
-				mValueSum = mCoin.getAmount();	
+				mValueSum = new MMRSumNumber( mCoin.getAmount() );	
 			}
 			
 			//Calculate the Hash..
