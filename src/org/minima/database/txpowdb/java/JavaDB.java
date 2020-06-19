@@ -1,6 +1,8 @@
 package org.minima.database.txpowdb.java;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 import org.minima.database.txpowdb.TxPOWDBRow;
 import org.minima.database.txpowdb.TxPowDB;
@@ -10,10 +12,16 @@ import org.minima.objects.base.MiniNumber;
 
 public class JavaDB implements TxPowDB{
 
+	private Hashtable<String , JavaDBRow> mRowTable;
+	private Hashtable<String , JavaDBRow> mDeletedRowTable;
+	
 	private ArrayList<JavaDBRow> mRows;
 	private ArrayList<JavaDBRow> mDeletedRows;
 	
 	public JavaDB() {
+		mRowTable = new Hashtable<>();
+		mDeletedRowTable = new Hashtable<>();
+		
 		mRows = new ArrayList<>();
 		mDeletedRows = new ArrayList<>();
 	}
@@ -30,7 +38,8 @@ public class JavaDB implements TxPowDB{
 		JavaDBRow row = new JavaDBRow(zTxPOW);
 		
 		//Add it
-		mRows.add(row);
+//		mRows.add(row);
+		mRowTable.put(zTxPOW.getTxPowID().to0xString(), row);
 		
 		return row;
 	}
@@ -40,42 +49,61 @@ public class JavaDB implements TxPowDB{
 	 */
 	@Override
 	public TxPOWDBRow findTxPOWDBRow(MiniData zTxPOWID) {
-		for(JavaDBRow row : mRows) {
-			if(row.getTxPOW().getTxPowID().isEqual(zTxPOWID)) {
-				return row;
-			}
+		String search = zTxPOWID.to0xString();
+		
+		JavaDBRow row = mRowTable.get(search);
+		if(row != null) {
+			return row;
 		}
 		
-		for(JavaDBRow row : mDeletedRows) {
-			if(row.getTxPOW().getTxPowID().isEqual(zTxPOWID)) {
-				return row;
-			}
+		row = mDeletedRowTable.get(search);
+		if(row != null) {
+			return row;
 		}
 		
 		return null;
+		
+		
+//		for(JavaDBRow row : mRows) {
+//			if(row.getTxPOW().getTxPowID().isEqual(zTxPOWID)) {
+//				return row;
+//			}
+//		}
+//		
+//		for(JavaDBRow row : mDeletedRows) {
+//			if(row.getTxPOW().getTxPowID().isEqual(zTxPOWID)) {
+//				return row;
+//			}
+//		}
+//		
+//		return null;
 	}
 
 	@Override
 	public ArrayList<TxPOWDBRow> removeTxPOWInBlockLessThan(MiniNumber zBlockNumber) {
 		ArrayList<TxPOWDBRow> removed = new ArrayList<>();
-		ArrayList<JavaDBRow> newRows = new ArrayList<>();
+		
+		Hashtable<String , JavaDBRow> newRowTable = new Hashtable<>();
+//		ArrayList<JavaDBRow> newRows = new ArrayList<>();
 		
 		//The minimum block before its too late - TODO!
 		MiniNumber minblock = zBlockNumber.add(MiniNumber.TEN);
 		
-		for(JavaDBRow row : mRows) {
+		Enumeration<JavaDBRow> allrows = mRowTable.elements();
+		while(allrows.hasMoreElements()) {
+			JavaDBRow row = allrows.nextElement();
 			
 			if(row.isOnChainBlock()) {
-				newRows.add(row);
+				newRowTable.put(row.getTxPOW().getTxPowID().to0xString(), row);
 				
 				//Other wise the proofs are too old..
 			}else if(!row.isInBlock() && row.getTxPOW().getBlockNumber().isMore(minblock)) {
-				newRows.add(row);
-			
+				newRowTable.put(row.getTxPOW().getTxPowID().to0xString(), row);
+				
 				//It's in the chain
 			}else if(row.isInBlock() && row.getInBlockNumber().isMoreEqual(zBlockNumber)) {
-				newRows.add(row);
-			
+				newRowTable.put(row.getTxPOW().getTxPowID().to0xString(), row);
+				
 			}else {
 				//Remove it..
 				removed.add(row);
@@ -84,9 +112,33 @@ public class JavaDB implements TxPowDB{
 				deleteRow(row);
 			}
 		}
+			
+		
+//		for(JavaDBRow row : mRows) {
+//			
+//			if(row.isOnChainBlock()) {
+//				newRows.add(row);
+//				
+//				//Other wise the proofs are too old..
+//			}else if(!row.isInBlock() && row.getTxPOW().getBlockNumber().isMore(minblock)) {
+//				newRows.add(row);
+//			
+//				//It's in the chain
+//			}else if(row.isInBlock() && row.getInBlockNumber().isMoreEqual(zBlockNumber)) {
+//				newRows.add(row);
+//			
+//			}else {
+//				//Remove it..
+//				removed.add(row);
+//				
+//				//Add to the deleted rows
+//				deleteRow(row);
+//			}
+//		}
 		
 		//re-assign
-		mRows = newRows;
+		mRowTable = newRowTable;
+//		mRows = newRows;
 		
 		//Remove the deleted.. called periodically
 		removeDeleted();
@@ -97,28 +149,36 @@ public class JavaDB implements TxPowDB{
 	
 	private void deleteRow(JavaDBRow zRow) {
 		zRow.deleteRow();
-		mDeletedRows.add(zRow);
+//		mDeletedRows.add(zRow);
+		mDeletedRowTable.put(zRow.getTxPOW().getTxPowID().to0xString(), zRow);
 	}
 
 	private ArrayList<TxPOWDBRow> removeDeleted() {
 		ArrayList<TxPOWDBRow> removed = new ArrayList<>();
-		ArrayList<JavaDBRow> newDeletedRows = new ArrayList<>();
+		
+		Hashtable<String , JavaDBRow> newDeletedRowTable = new Hashtable<>();
+//		ArrayList<JavaDBRow> newDeletedRows = new ArrayList<>();
 
 		//Keep for 1 HR in the past
 		long timedelete = System.currentTimeMillis() - 1000*60*60;
 		
-		for(JavaDBRow row : mDeletedRows) {
+		Enumeration<JavaDBRow> allrows = mDeletedRowTable.elements();
+		while(allrows.hasMoreElements()) {
+			JavaDBRow row = allrows.nextElement();
 			if(row.getDeleteTime() == 0) {
-				newDeletedRows.add(row);
+//				newDeletedRows.add(row);
+				newDeletedRowTable.put(row.getTxPOW().getTxPowID().to0xString(), row);
 			}else if(row.getDeleteTime() > timedelete) {
-				newDeletedRows.add(row);
+				newDeletedRowTable.put(row.getTxPOW().getTxPowID().to0xString(), row);
+//				newDeletedRows.add(row);
 			}else {
 				removed.add(row);
 			}
 		}
 		
 		//Reset
-		mDeletedRows = newDeletedRows;
+		mDeletedRowTable = newDeletedRowTable;
+//		mDeletedRows = newDeletedRows;
 		
 		return removed;
 	}
@@ -127,7 +187,11 @@ public class JavaDB implements TxPowDB{
 	public ArrayList<TxPOWDBRow> getAllUnusedTxPOW() {
 		ArrayList<TxPOWDBRow> ret = new ArrayList<>();
 		
-		for(JavaDBRow row : mRows) {
+		
+		Enumeration<JavaDBRow> allrows = mRowTable.elements();
+		while(allrows.hasMoreElements()) {
+			JavaDBRow row = allrows.nextElement();
+		
 			if(!row.isInBlock()) {
 				ret.add(row);
 			}
@@ -138,11 +202,13 @@ public class JavaDB implements TxPowDB{
 
 	@Override
 	public int getCompleteSize() {
-		return mRows.size()+ mDeletedRows.size();
+		return mRowTable.size()+ mDeletedRowTable.size();
 	}
 
 	@Override
 	public void removeTxPOW(MiniData zTxPOWID) {
+		mRowTable.remove(zTxPOWID.to0xString());
+		
 		ArrayList<JavaDBRow> newRows = new ArrayList<>();
 		
 		boolean found = false;
