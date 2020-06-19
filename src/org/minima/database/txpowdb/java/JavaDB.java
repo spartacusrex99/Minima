@@ -38,7 +38,6 @@ public class JavaDB implements TxPowDB{
 		JavaDBRow row = new JavaDBRow(zTxPOW);
 		
 		//Add it
-//		mRows.add(row);
 		mRowTable.put(zTxPOW.getTxPowID().to0xString(), row);
 		
 		return row;
@@ -62,21 +61,6 @@ public class JavaDB implements TxPowDB{
 		}
 		
 		return null;
-		
-		
-//		for(JavaDBRow row : mRows) {
-//			if(row.getTxPOW().getTxPowID().isEqual(zTxPOWID)) {
-//				return row;
-//			}
-//		}
-//		
-//		for(JavaDBRow row : mDeletedRows) {
-//			if(row.getTxPOW().getTxPowID().isEqual(zTxPOWID)) {
-//				return row;
-//			}
-//		}
-//		
-//		return null;
 	}
 
 	@Override
@@ -84,7 +68,6 @@ public class JavaDB implements TxPowDB{
 		ArrayList<TxPOWDBRow> removed = new ArrayList<>();
 		
 		Hashtable<String , JavaDBRow> newRowTable = new Hashtable<>();
-//		ArrayList<JavaDBRow> newRows = new ArrayList<>();
 		
 		//The minimum block before its too late - TODO!
 		MiniNumber minblock = zBlockNumber.add(MiniNumber.TEN);
@@ -113,32 +96,8 @@ public class JavaDB implements TxPowDB{
 			}
 		}
 			
-		
-//		for(JavaDBRow row : mRows) {
-//			
-//			if(row.isOnChainBlock()) {
-//				newRows.add(row);
-//				
-//				//Other wise the proofs are too old..
-//			}else if(!row.isInBlock() && row.getTxPOW().getBlockNumber().isMore(minblock)) {
-//				newRows.add(row);
-//			
-//				//It's in the chain
-//			}else if(row.isInBlock() && row.getInBlockNumber().isMoreEqual(zBlockNumber)) {
-//				newRows.add(row);
-//			
-//			}else {
-//				//Remove it..
-//				removed.add(row);
-//				
-//				//Add to the deleted rows
-//				deleteRow(row);
-//			}
-//		}
-		
 		//re-assign
 		mRowTable = newRowTable;
-//		mRows = newRows;
 		
 		//Remove the deleted.. called periodically
 		removeDeleted();
