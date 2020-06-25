@@ -36,12 +36,12 @@ public class MMRSet implements Streamable {
 	/**
 	 * What is the current entry number..
 	 */
-	public MiniInteger mEntryNumber = new MiniInteger(0);
+	MiniInteger mEntryNumber = new MiniInteger(0);
 	
 	/**
 	 * All the entries in this set 
 	 */
-	public ArrayList<MMREntry> mEntries;
+	ArrayList<MMREntry> mEntries;
 
 	/**
 	 * The maximum row used in this Set
