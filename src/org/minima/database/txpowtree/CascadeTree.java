@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.minima.GlobalParams;
 import org.minima.objects.base.MiniData;
 import org.minima.objects.base.MiniNumber;
+import org.minima.utils.MinimaLogger;
 
 public class CascadeTree {
 
@@ -63,7 +64,7 @@ public class CascadeTree {
 		mCascadeTree = new BlockTree();
 				
 		//All this we keep
-		BlockTreeNode fullkeep = BlockTree.copyTreeNode(newfulltree);
+		BlockTreeNode fullkeep = newfulltree;
 		
 		//The rest of the tree.. that we CAN cascade
 		BlockTreeNode newcascade  = newfulltree.getParent();
@@ -74,13 +75,10 @@ public class CascadeTree {
 		//Now add all that
 		ArrayList<BlockTreeNode> cascnodes = new ArrayList<>();
 		while(newcascade != null) {
-			//Create a new cascade node..
-			BlockTreeNode node = new BlockTreeNode(newcascade);
-			node.setCascade(true);
-			node.setState(BlockTreeNode.BLOCKSTATE_VALID);
-			
-			//Add a node
-			cascnodes.add(node);
+			//Set all the cascade blocks to valid / cascade
+			newcascade.setCascade(true);
+			newcascade.setState(BlockTreeNode.BLOCKSTATE_VALID);
+			cascnodes.add(newcascade);
 			
 			//Go up the tree..
 			newcascade = newcascade.getParent();
@@ -122,14 +120,14 @@ public class CascadeTree {
 			
 		//Now add all this to the final tree
 		for(BlockTreeNode node : finalnodes) {
-			//Create a new Node..
-			BlockTreeNode copy = new BlockTreeNode(node);
+			//No children
+			node.clearChildren();
 			
 			//Add..
-			mCascadeTree.hardAddNode(copy, false);
+			mCascadeTree.hardAddNode(node, false);
 			
 			//It's a cascader
-			mCascadeTree.hardSetCascadeNode(copy);
+			mCascadeTree.hardSetCascadeNode(node);
 		}
 				
 		//Add the rest

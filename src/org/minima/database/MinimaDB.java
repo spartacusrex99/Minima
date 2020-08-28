@@ -802,9 +802,9 @@ public class MinimaDB {
 		}
 		
 		//DEBUG..
-//		if(howdeep.isMore(MiniNumber.TWO)) {
-//			howdeep = MiniNumber.TWO;
-//		}
+		if(howdeep.isMore(MiniNumber.TWO)) {
+			howdeep = MiniNumber.TWO;
+		}
 	
 		//The Actual MMR block we will use..
 		MMRSet proofmmr = basemmr.getParentAtTime(currentblock.sub(howdeep));

@@ -220,6 +220,10 @@ public class BlockTreeNode implements Comparable<BlockTreeNode> {
 		return mChildren;
 	}
 	
+	public void clearChildren() {
+		mChildren.clear();;
+	}
+	
 	public int getNumberChildren(){
 		return mChildren.size();
 	}
