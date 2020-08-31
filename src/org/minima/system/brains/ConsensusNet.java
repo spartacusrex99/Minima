@@ -451,6 +451,11 @@ public class ConsensusNet extends ConsensusProcessor {
 			//The TxPoW
 			TxPoW txpow = (TxPoW)zMessage.getObject("txpow");
 			
+			//Did we receive it..
+			if(txpow.isTransaction()) {
+				MinimaLogger.log("NET : TXN received.. "+txpow);
+			}
+			
 			//Do we have it.. now check DB - hmmm..
 			if(getMainDB().getTxPOW(txpow.getTxPowID()) != null) {
 				MinimaLogger.log("NET Transaction we already have.. "+txpow.getBlockNumber()+" "+txpow.getTxPowID());

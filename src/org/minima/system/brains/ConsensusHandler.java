@@ -268,11 +268,6 @@ public class ConsensusHandler extends SystemHandler {
 			//Back it up!
 			getMainHandler().getBackupManager().backupTxpow(txpow);
 			
-			//Notify the WebSocket Listeners
-			if(txpow.isTransaction()) {
-				
-			}
-			
 			//Process it
 			PostMessage(new Message(ConsensusHandler.CONSENSUS_PROCESSTXPOW).addObject("txpow", txpow));
 			

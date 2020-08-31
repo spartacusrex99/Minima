@@ -24,7 +24,7 @@ public class GlobalParams {
 	/**
 	 * Speed in blocks per second.. 0.033 = 30 second block time
 	 */
-	public static final MiniNumber MINIMA_BLOCK_SPEED  = new MiniNumber("0.033");
+	public static final MiniNumber MINIMA_BLOCK_SPEED  = new MiniNumber("0.5");
 	
 	/**
 	 * MAX Difficulty change per block
@@ -34,7 +34,7 @@ public class GlobalParams {
 	/**
 	 * When checking speed and average difficulty only look at this many blocks back
 	 */
-	public static final MiniNumber MINIMA_BLOCKS_SPEED_CALC = new MiniNumber(720);
+	public static final MiniNumber MINIMA_BLOCKS_SPEED_CALC = new MiniNumber(8);
 	
 	/**
 	 * How deep before we think confirmed..
@@ -44,12 +44,12 @@ public class GlobalParams {
 	/**
 	 * Depth before we cascade.. @ 30 seconds this is 7 days..
 	 */
-	public static final MiniNumber MINIMA_CASCADE_START_DEPTH = new MiniNumber(20000);
+	public static final MiniNumber MINIMA_CASCADE_START_DEPTH = new MiniNumber(16);
 	
 	/**
 	 * Number of blocks at each cascade level 
 	 */
-	public static final int MINIMA_CASCADE_LEVEL_NODES  = 256;
+	public static final int MINIMA_CASCADE_LEVEL_NODES  = 2;
 	
 	/**
 	 * How Many Cascade Levels

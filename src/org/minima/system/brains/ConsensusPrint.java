@@ -110,7 +110,9 @@ public class ConsensusPrint extends ConsensusProcessor {
 				JSONArray txpowjson = new JSONArray();
 				ArrayList<TxPOWDBRow> txpowdb = getMainDB().getTxPowDB().getAllTxPOWDBRow();
 				for(TxPOWDBRow row : txpowdb) {
-					txpowjson.add(row.toJSON());
+					if(row.getTxPOW().isTransaction()) {
+						txpowjson.add(row.toJSON());	
+					}
 				}
 				
 				dets.put("txpowdbsize" , txpowdb.size()); 
@@ -441,6 +443,7 @@ public class ConsensusPrint extends ConsensusProcessor {
 		}else if(zMessage.isMessageType(CONSENSUS_BALANCE)){
 			//Is this a HARD reset..
 			if(!zMessage.exists("hard") && mOldBalanceJSON != null) {
+				MinimaLogger.log("OLD BALANCE OUTPUT");
 				InputHandler.setFullResponse(zMessage, mOldBalanceJSON);
 				InputHandler.endResponse(zMessage, true, "");
 				return;

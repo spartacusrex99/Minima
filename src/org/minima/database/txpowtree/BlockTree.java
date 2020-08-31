@@ -411,6 +411,10 @@ public class BlockTree {
 							//The Parent block..
 							BlockTreeNode pnode = zNode.getParent();
 							
+							if(zNode.getTxPow().getBlockTransactions().size()>0) {
+								MinimaLogger.log("CHECK Block with Transactions..");
+							}
+							
 							//Check block number..
 							if(!zNode.getBlockNumber().isEqual(pnode.getBlockNumber().increment())){
 								MinimaLogger.log("INVALID BLOCK NUMBER for Parent "+zNode.getBlockNumber());
@@ -457,10 +461,12 @@ public class BlockTree {
 							MiniData diffhash = new MiniData("0x"+newdiff.toString(16)); 
 							
 							//Check they are the same!..
-							if(!zNode.getTxPow().getBlockDifficulty().isEqual(diffhash)) {
-								MinimaLogger.log("INVALID BLOCK DIFFICULTY "+zNode.getBlockNumber());
-								zNode.setState(BlockTreeNode.BLOCKSTATE_INVALID);
-								return;
+							if(!GlobalParams.MINIMA_ZERO_DIFF_BLK) {
+								if(!zNode.getTxPow().getBlockDifficulty().isEqual(diffhash)) {
+									MinimaLogger.log("INVALID BLOCK DIFFICULTY "+zNode.getBlockNumber());
+									zNode.setState(BlockTreeNode.BLOCKSTATE_INVALID);
+									return;
+								}
 							}
 							
 							//Check the Super Block Levels are Correct! and point to the correct blocks
@@ -500,6 +506,8 @@ public class BlockTree {
 								//it's all valid!
 								zNode.setState(BlockTreeNode.BLOCKSTATE_VALID);
 							}else{
+								MinimaLogger.log("INVALID BLOCK.. ");
+								
 								//No good..
 								zNode.setState(BlockTreeNode.BLOCKSTATE_INVALID);
 							}

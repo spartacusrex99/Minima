@@ -64,6 +64,7 @@ public class CascadeTree {
 				
 		//All this we keep
 		BlockTreeNode fullkeep = BlockTree.copyTreeNode(newfulltree);
+//		BlockTreeNode fullkeep = newfulltree;
 		
 		//The rest of the tree.. that we CAN cascade
 		BlockTreeNode newcascade  = newfulltree.getParent();

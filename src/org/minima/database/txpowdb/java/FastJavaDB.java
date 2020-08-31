@@ -9,6 +9,7 @@ import org.minima.database.txpowdb.TxPowDB;
 import org.minima.objects.TxPoW;
 import org.minima.objects.base.MiniData;
 import org.minima.objects.base.MiniNumber;
+import org.minima.utils.MinimaLogger;
 
 public class FastJavaDB implements TxPowDB {
 
@@ -115,6 +116,8 @@ public class FastJavaDB implements TxPowDB {
 			}else {
 				//Remove it..
 				removed.add(row);
+				
+				MinimaLogger.log("REMOVING TXPOW "+row.getTxPOW().getTxPowID() );
 			}		
 		}
 		

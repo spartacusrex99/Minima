@@ -192,6 +192,18 @@ public class MinimaDB {
 			}
 		}
 		
+		if(zTxPow.isBlock() && zTxPow.getBlockTransactions().size()>0) {
+			MinimaLogger.log("Block with transactions : "+zTxPow);
+		}
+		
+		if(zTxPow.isTransaction()) {
+			MinimaLogger.log("Checking Transaction : "+zTxPow.getTxPowID());
+		
+			//Get the record.. 
+			TxPOWDBRow trow = mTxPOWDB.findTxPOWDBRow(zTxPow.getTxPowID());
+			MinimaLogger.log("TXPOW DB ROW : "+trow.isInBlock());
+		}
+		
 		//Check blocks to see if any are now filled..
 		ArrayList<TxPOWDBRow> unfinishedblocks  = mTxPOWDB.getAllBlocksMissingTransactions();
 		
@@ -806,8 +818,16 @@ public class MinimaDB {
 //			howdeep = MiniNumber.TWO;
 //		}
 	
+		//The actual proof block..
+		MiniNumber casc = getMainTree().getCascadeNode().getBlockNumber();
+		MiniNumber proofblock = currentblock.sub(howdeep);
+		if(proofblock.isLessEqual(casc)) {
+			MinimaLogger.log("Proof Block pre cascade.. "+proofblock+" / "+casc);
+			proofblock = casc.increment();
+		}
+		
 		//The Actual MMR block we will use..
-		MMRSet proofmmr = basemmr.getParentAtTime(currentblock.sub(howdeep));
+		MMRSet proofmmr = basemmr.getParentAtTime(proofblock);
 		
 		//Now add the actual MMR Proofs..
 		for(Coin cc : ins) {
@@ -1079,6 +1099,9 @@ public class MinimaDB {
 		
 		//Set the current Transaction List!
 		ArrayList<TxPOWDBRow> unused = mTxPOWDB.getAllUnusedTxPOW();
+		if(unused.size() > 0) {
+			MinimaLogger.log("GET TXPOW UNUSED TXPOW >0 .. "+unused);
+		}
 		for(TxPOWDBRow row : unused) {
 			//Current MAX transactions.. #TODO.. this needs to be dynamic..
 			if(txncounter.isMore(MiniNumber.SIXTYFOUR)) {
@@ -1087,6 +1110,8 @@ public class MinimaDB {
 			
 			//Check is still VALID..
 			TxPoW txp = row.getTxPOW();
+			
+			MinimaLogger.log("Check TXN to add to block.. "+txp);
 			
 			/**
 			 * MUST be a transaction as that prevents double entry. A block with no transaction 
@@ -1103,6 +1128,8 @@ public class MinimaDB {
 					//Add it..
 					txpow.addBlockTxPOW(txp);	
 				
+					MinimaLogger.log("TXN added to block.. "+txp.getTxPowID());
+					
 				}else {
 					//Could be a transaction that is only valid in a different  branch.					
 					MinimaLogger.log("Invalid TXPOW found. (leaving.. could be in other branch) "+txp.getTxPowID());

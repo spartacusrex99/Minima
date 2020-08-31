@@ -110,12 +110,12 @@ public class TxPoWMiner extends SystemHandler{
 				getMainHandler().getConsensusHandler().PostMessage(sametr);
 				
 			}else {
-				if(mShowTXPOWMine) {
-					MinimaLogger.log("TXPOW MINED!");
-				}
-				
 				//Set the TxPOW
 				txpow.calculateTXPOWID();
+				
+				if(mShowTXPOWMine) {
+					MinimaLogger.log("TXPOW MINED! "+txpow.getTxPowID());
+				}
 				
 				//We have a valid TX-POW..
 				Message msg = new Message(ConsensusHandler.CONSENSUS_FINISHED_MINE).addObject("txpow", txpow);
