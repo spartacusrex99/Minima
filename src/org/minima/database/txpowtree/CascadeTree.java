@@ -63,8 +63,8 @@ public class CascadeTree {
 		mCascadeTree = new BlockTree();
 				
 		//All this we keep
-		BlockTreeNode fullkeep = BlockTree.copyTreeNode(newfulltree);
-//		BlockTreeNode fullkeep = newfulltree;
+//		BlockTreeNode fullkeep = BlockTree.copyTreeNode(newfulltree);
+		BlockTreeNode fullkeep = newfulltree;
 		
 		//The rest of the tree.. that we CAN cascade
 		BlockTreeNode newcascade  = newfulltree.getParent();
@@ -136,11 +136,14 @@ public class CascadeTree {
 		//Add the rest
 		mCascadeTree.hardAddNode(fullkeep, true);
 		
+		//reset the weights..
+		mCascadeTree.zeroWeights();
+		
 		//Find the old tip.. makes the reset weight 1000x faster..
 		mCascadeTree.mTip = mCascadeTree.findNode(oldtiptxpowid,true);
 		
 		//And sort the weights
-		mCascadeTree.resetWeights();
+		mCascadeTree.resetWeights(false);
 		
 		//And clear it out..
 		mCascadeTree.clearCascadeBody();

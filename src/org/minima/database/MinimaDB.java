@@ -814,17 +814,18 @@ public class MinimaDB {
 		}
 		
 		//DEBUG..
-//		if(howdeep.isMore(MiniNumber.TWO)) {
-//			howdeep = MiniNumber.TWO;
-//		}
+		if(howdeep.isMore(MiniNumber.TWO)) {
+			howdeep = MiniNumber.TWO;
+		}
 	
 		//The actual proof block..
-		MiniNumber casc = getMainTree().getCascadeNode().getBlockNumber();
 		MiniNumber proofblock = currentblock.sub(howdeep);
-		if(proofblock.isLessEqual(casc)) {
-			MinimaLogger.log("Proof Block pre cascade.. "+proofblock+" / "+casc);
-			proofblock = casc.increment();
-		}
+		
+//		MiniNumber casc = getMainTree().getCascadeNode().getBlockNumber();
+//		if(proofblock.isLessEqual(casc)) {
+//			MinimaLogger.log("Proof Block pre cascade.. "+proofblock+" / "+casc);
+//			proofblock = casc.increment();
+//		}
 		
 		//The Actual MMR block we will use..
 		MMRSet proofmmr = basemmr.getParentAtTime(proofblock);

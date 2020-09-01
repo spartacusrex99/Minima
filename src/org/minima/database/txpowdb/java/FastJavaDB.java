@@ -115,9 +115,11 @@ public class FastJavaDB implements TxPowDB {
 				
 			}else {
 				//Remove it..
-				removed.add(row);
+//				removed.add(row);
 				
-				MinimaLogger.log("REMOVING TXPOW "+row.getTxPOW().getTxPowID() );
+				newtable.put(rowtxpow.getTxPowID().to0xString(),row);
+				
+				MinimaLogger.log("NOT REMOVING TXPOW "+row.getTxPOW().getTxPowID() );
 			}		
 		}
 		
