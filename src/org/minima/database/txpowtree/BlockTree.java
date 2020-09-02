@@ -166,7 +166,7 @@ public class BlockTree {
 	 */
 	public void zeroWeights() {
 		//Clear the current table..
-		mFastLink = new Hashtable<>();
+		mFastLink.clear();
 				
 		//Go down the whole tree..
 		_recurseTree(new NodeAction() {
